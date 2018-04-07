@@ -2,11 +2,23 @@
 <RelativeLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <com.applandeo.materialcalendarview.CalendarView
-        android:id="@+id/calendar_view_vaccination"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:agendaCalendar="http://schemas.android.com/tools">
+    <!--<com.applandeo.materialcalendarview.CalendarView-->
+        <!--android:id="@+id/calendar_view_vaccination"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content" />-->
+    <com.github.tibolte.agendacalendarview.AgendaCalendarView
+        android:id="@+id/agenda_calendar_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        agendaCalendar:agendaCurrentDayTextColor="@color/theme_primary"
+        agendaCalendar:calendarColor="@color/theme_primary"
+        agendaCalendar:calendarCurrentDayTextColor="@color/calendar_text_current_day"
+        agendaCalendar:calendarDayTextColor="@color/theme_text_icons"
+        agendaCalendar:calendarHeaderColor="@color/theme_primary_dark"
+        agendaCalendar:calendarPastDayTextColor="@color/theme_light_primary"
+        agendaCalendar:fabColor="@color/theme_accent" />
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
