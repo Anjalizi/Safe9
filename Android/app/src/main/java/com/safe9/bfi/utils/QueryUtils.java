@@ -22,7 +22,8 @@ public final class QueryUtils {
 
     private static String TOKEN_BASE_URL = "https://hacknineapi.herokuapp.com/raspi/edit";
     private static String CHILD_BASE_URL = "https://paddychild.herokuapp.com/childs/new";
-    private static String PATIENT_BASE_URL =  "https://patientapihack.herokuapp.com/patients/details";
+    private static String PATIENT_BASE_URL = "https://paddychild.herokuapp.com/patients/details";
+    private static String VACCINATIONS_BASE_URL = "https://paddychild.herokuapp.com/vaccines/new";
 
     public static RequestQueue sendTokenRequest(RequestQueue queue, boolean isGetRequest,
                                                 final String token) {
@@ -69,7 +70,7 @@ public final class QueryUtils {
         } else {
             baseUrl = CHILD_BASE_URL;
         }
-        StringRequest request = new StringRequest(requestMethod, baseUrl+ urlParams,
+        StringRequest request = new StringRequest(requestMethod, baseUrl + urlParams,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -85,7 +86,30 @@ public final class QueryUtils {
         }
         );
 
-// Add the request to the RequestQueue.
+        // Add the request to the RequestQueue.
+        queue.add(request);
+        return queue;
+    }
+
+    public static RequestQueue sendVaccineDataRequest(RequestQueue queue,
+                                                      final String urlParams) {
+        int requestMethod = Request.Method.POST;
+        StringRequest request = new StringRequest(requestMethod, VACCINATIONS_BASE_URL + urlParams,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(QueryUtils.class.getSimpleName(), response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                Log.d(QueryUtils.class.getSimpleName(), error.toString());
+            }
+        }
+        );
+
+        // Add the request to the RequestQueue.
         queue.add(request);
         return queue;
     }
@@ -131,7 +155,7 @@ public final class QueryUtils {
 
     public static void sendLocation(RequestQueue queue, double lat, double lng, final QueryCallback callback) {
 
-        String url = "https://patientapihack.herokuapp.com/patients/neighbours?latitude=" + lat + "&longitude=" + lng;
+        String url = "https://paddychild.herokuapp.com/patients/neighbours?latitude=" + lat + "&longitude=" + lng;
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -149,7 +173,7 @@ public final class QueryUtils {
         }
         );
 
-// Add the request to the RequestQueue.
+        // Add the request to the RequestQueue.
         queue.add(request);
     }
 }

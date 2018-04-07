@@ -70,4 +70,5 @@
     <string name="submit">Submit</string>
     <string name="add_child_title">Add Child Details</string>
     <string name="weight_of_child">Weight of Child</string>
+    <string name="get_vaccine">Get Vaccine</string>
 </resources>

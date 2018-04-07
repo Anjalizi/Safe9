@@ -1,21 +1,25 @@
 package com.safe9.bfi.ui;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.github.tibolte.agendacalendarview.AgendaCalendarView;
-import com.github.tibolte.agendacalendarview.CalendarPickerController;
-import com.github.tibolte.agendacalendarview.models.BaseCalendarEvent;
-import com.github.tibolte.agendacalendarview.models.CalendarEvent;
-import com.github.tibolte.agendacalendarview.models.DayItem;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.safe9.bfi.R;
 import com.safe9.bfi.data.ChildColumns;
 import com.safe9.bfi.model.Child;
 import com.safe9.bfi.model.Patient;
+import com.safe9.bfi.model.Vaccine;
+import com.safe9.bfi.utils.QueryUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,43 +27,58 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
+import static android.view.View.GONE;
 import static com.safe9.bfi.data.PatientProvider.Children.URI_CHILDREN;
 
-public class VaccinationActivity extends AppCompatActivity implements CalendarPickerController {
+public class VaccinationActivity extends AppCompatActivity {
 
-//    @BindView(R.id.calendar_view_vaccination)
-//    CalendarView mCalendarView;
-    @BindView(R.id.fab_vaccine)
-    FloatingActionButton mVaccineFAB;
-    @BindView(R.id.agenda_calendar_view)
-    AgendaCalendarView mAgendaCalendarView;
+    @BindView(R.id.calendar_view)
+    CompactCalendarView mCalendarView;
+    @BindView(R.id.tv_vaccine_title)
+    TextView mVaccineTitleTextView;
+    @BindView(R.id.tv_vaccine_details)
+    TextView mVaccineDetailsTextView;
+    @BindView(R.id.btn_vaccine_submit)
+    Button mVaccineSubmitButton;
 
+    private Date mDateClicked;
+
+    private static final String HEPATITIS = "Hepatitis B";
+    private static final String TETANUS = "Tetanus";
+    private static final String PNEUMO = "Pneumococcus";
+    private static final String ROTA = "Rotavirus";
+
+    ArrayList<Vaccine> hepBDates, tetanusDates, pneumoDates, rotaDates;
     private Patient mPatient;
     private Child mChild;
-    private SimpleDateFormat mDateFormat;
+    private SimpleDateFormat mDateFormat, mMonthFormat, mDetailFormat;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vaccination);
-
         ButterKnife.bind(this);
+
+        mCalendarView.setFirstDayOfWeek(Calendar.MONDAY);
+
         mDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        mDetailFormat = new SimpleDateFormat("dd-MMM");
+        mMonthFormat = new SimpleDateFormat("MMM-yy");
         mPatient = getIntent().getParcelableExtra(Patient.PATIENT_CONSTANT);
         fetchVaccineRecords();
-        mVaccineFAB.setOnClickListener(new View.OnClickListener() {
+        mVaccineSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addVaccineRecord();
+                submitVaccination();
             }
         });
+
 
     }
 
@@ -99,7 +118,6 @@ public class VaccinationActivity extends AppCompatActivity implements CalendarPi
                 }
             }
             setupCalendarView();
-
         }
 
     }
@@ -107,26 +125,47 @@ public class VaccinationActivity extends AppCompatActivity implements CalendarPi
     private void setupCalendarView() {
 
         Date birthDate = mChild.getmBirthdate();
-        ArrayList<Date> hepBDates, tetanusDates, pneumoDates, rotaDates;
         hepBDates = new ArrayList<>();
         tetanusDates = new ArrayList<>();
         pneumoDates = new ArrayList<>();
         rotaDates = new ArrayList<>();
         Timber.d("Birthdate is : " + birthDate.toString());
 
-        hepBDates.add(addMonths(birthDate, 1));
-        hepBDates.add(addMonths(birthDate, 6));
-        tetanusDates.add(addMonths(birthDate, 2));
-        tetanusDates.add(addMonths(birthDate, 4));
-        tetanusDates.add(addMonths(birthDate, 6));
-        tetanusDates.add(addMonths(birthDate, 12));
-        tetanusDates.add(addMonths(birthDate, 18));
-        pneumoDates.add(addMonths(birthDate, 2));
-        pneumoDates.add(addMonths(birthDate, 4));
-        pneumoDates.add(addMonths(birthDate, 12));
-        rotaDates.add(addMonths(birthDate, 2));
-        rotaDates.add(addMonths(birthDate, 4));
-        rotaDates.add(addMonths(birthDate, 6));
+        try {
+
+            Date originalDate = mDateFormat.parse("1970-01-01");
+
+            boolean b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13;
+            b1 = !originalDate.equals(mChild.getmHepB().get(0));
+            b2 = !originalDate.equals(mChild.getmHepB().get(1));
+            b3 = !originalDate.equals(mChild.getmTetanus().get(0));
+            b4 = !originalDate.equals(mChild.getmTetanus().get(1));
+            b5 = !originalDate.equals(mChild.getmTetanus().get(2));
+            b6 = !originalDate.equals(mChild.getmTetanus().get(3));
+            b7 = !originalDate.equals(mChild.getmTetanus().get(4));
+            b8 = !originalDate.equals(mChild.getmPneumo().get(0));
+            b9 = !originalDate.equals(mChild.getmPneumo().get(1));
+            b10 = !originalDate.equals(mChild.getmPneumo().get(2));
+            b11 = !originalDate.equals(mChild.getmRota().get(0));
+            b12 = !originalDate.equals(mChild.getmRota().get(1));
+            b13 = !originalDate.equals(mChild.getmRota().get(2));
+            hepBDates.add(new Vaccine(addMonths(birthDate, 1), b1, HEPATITIS, ChildColumns.HEPB1));
+            hepBDates.add(new Vaccine(addMonths(birthDate, 6), b2, HEPATITIS, ChildColumns.HEPB6));
+            tetanusDates.add(new Vaccine(addMonths(birthDate, 2), b3, TETANUS, ChildColumns.TET2));
+            tetanusDates.add(new Vaccine(addMonths(birthDate, 4), b4, TETANUS, ChildColumns.TET4));
+            tetanusDates.add(new Vaccine(addMonths(birthDate, 6), b5, TETANUS, ChildColumns.TET6));
+            tetanusDates.add(new Vaccine(addMonths(birthDate, 12), b6, TETANUS, ChildColumns.TET12));
+            tetanusDates.add(new Vaccine(addMonths(birthDate, 18), b7, TETANUS, ChildColumns.TET18));
+            pneumoDates.add(new Vaccine(addMonths(birthDate, 2), b8, PNEUMO, ChildColumns.PNEUM2));
+            pneumoDates.add(new Vaccine(addMonths(birthDate, 4), b9, PNEUMO, ChildColumns.PNEUM4));
+            pneumoDates.add(new Vaccine(addMonths(birthDate, 12), b10, PNEUMO, ChildColumns.PNEUM12));
+            rotaDates.add(new Vaccine(addMonths(birthDate, 2), b11, ROTA, ChildColumns.ROTA2));
+            rotaDates.add(new Vaccine(addMonths(birthDate, 4), b12, ROTA, ChildColumns.ROTA4));
+            rotaDates.add(new Vaccine(addMonths(birthDate, 6), b13, ROTA, ChildColumns.ROTA6));
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
 
         Calendar minDate = Calendar.getInstance();
@@ -134,113 +173,106 @@ public class VaccinationActivity extends AppCompatActivity implements CalendarPi
 
         maxDate.add(Calendar.YEAR, 2);
 
-        List<CalendarEvent> eventList = new ArrayList<>();
 
+        for (Vaccine vaccine : hepBDates) {
 
-//        mCalendarView.showCurrentMonthPage();
+            mCalendarView.addEvent(new Event(R.color.colorAccent, vaccine.getmDate().getTime(), vaccine));
 
-
-//        List<EventDay> events = new ArrayList<>();
-
-
-        Calendar startTime = dateToCalendar(birthDate);
-
-        for (Date date : hepBDates) {
-            BaseCalendarEvent event1 = new BaseCalendarEvent("Hepatitis Vaccine", "HepB 125", "",
-                    ContextCompat.getColor(this, R.color.colorAccent), dateToCalendar(date),dateToCalendar(date), true);
-            eventList.add(event1);
         }
-        for (Date date : tetanusDates) {
-            BaseCalendarEvent event1 = new BaseCalendarEvent("Tetanus Vaccine", "TET 125", "",
-                    ContextCompat.getColor(this, R.color.colorAccent), dateToCalendar(date),dateToCalendar(date), true);
-            eventList.add(event1);
+        for (Vaccine vaccine : tetanusDates) {
+            mCalendarView.addEvent(new Event(R.color.colorAccent, vaccine.getmDate().getTime(), vaccine));
+
         }
-        for (Date date : pneumoDates) {
-            BaseCalendarEvent event1 = new BaseCalendarEvent("Pneumo Vaccine", "PNEUM 125", "",
-                    ContextCompat.getColor(this, R.color.colorAccent), dateToCalendar(date),dateToCalendar(date), true);
-            eventList.add(event1);
+        for (Vaccine vaccine : pneumoDates) {
+            mCalendarView.addEvent(new Event(R.color.colorAccent, vaccine.getmDate().getTime(), vaccine));
+
         }
-        for (Date date : rotaDates) {
-            BaseCalendarEvent event1 = new BaseCalendarEvent("Rota Vaccine", "ROT 125", "",
-                    ContextCompat.getColor(this, R.color.colorAccent), dateToCalendar(date),dateToCalendar(date), true);
-            eventList.add(event1);
+        for (Vaccine vaccine : rotaDates) {
+
+            mCalendarView.addEvent(new Event(R.color.colorAccent, vaccine.getmDate().getTime(), vaccine));
         }
-        mAgendaCalendarView.init(eventList, minDate, maxDate, Locale.getDefault(), this);
 
-//        for (Date date : mChild.getmHepB()) {
-//            events.add(new EventDay(dateToCalendar(date), R.drawable.needle));
-//        }
-//        for (Date date : mChild.getmTetanus()) {
-//            events.add(new EventDay(dateToCalendar(date), R.drawable.needle));
-//        }
-//        for (Date date : mChild.getmPneumo()) {
-//            events.add(new EventDay(dateToCalendar(date), R.drawable.needle));
-//        }
-//        for (Date date : mChild.getmRota()) {
-//            events.add(new EventDay(dateToCalendar(date), R.drawable.needle));
-//        }
+        setTitle(mMonthFormat.format(mCalendarView.getFirstDayOfCurrentMonth()));
 
-      /*  mCalendarView.setEvents(events);
-
-        mCalendarView.setOnDayClickListener(new OnDayClickListener() {
-            @Override
-            public void onDayClick(EventDay eventDay) {
-                Calendar clickedDayCalendar = eventDay.getCalendar();
-                int resId = eventDay.getImageResource();
-                switch (resId) {
-                    case R.drawable.needle_blue:
-                        Toast.makeText(VaccinationActivity.this, "Blue", Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.drawable.needle_green:
-                        Toast.makeText(VaccinationActivity.this, "Green", Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.drawable.needle_yellow:
-                        Toast.makeText(VaccinationActivity.this, "Yellow", Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.drawable.needle_red:
-                        Toast.makeText(VaccinationActivity.this, "Red", Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        break;
-                }
-
+        List<Event> events = mCalendarView.getEvents(Calendar.getInstance().getTime());
+        if (events.size() == 0) {
+            mVaccineDetailsTextView.setText("");
+            mVaccineTitleTextView.setText("No Vaccines");
+            mVaccineSubmitButton.setVisibility(GONE);
+        } else {
+            Vaccine vaccine = (Vaccine) events.get(0).getData();
+            String title = vaccine.getmTitle();
+            for (int i = 1; i < events.size(); i++) {
+                title = title.concat("\n" + ((Vaccine)events.get(i).getData()).getmTitle());
             }
-        });*/
+            mVaccineTitleTextView.setText(title);
+            String details;
+            details = "Vaccination due on " + mDetailFormat.format(Calendar.getInstance().getTime());
+            if (!vaccine.isDone()) {
+                mVaccineSubmitButton.setVisibility(View.VISIBLE);
+            } else {
+                mVaccineSubmitButton.setVisibility(GONE);
+                details = details.concat("\nCompleted");
+            }
+            mVaccineDetailsTextView.setText(details);
+        }
+
+
+
+        mCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
+            @Override
+            public void onDayClick(Date dateClicked) {
+                mDateClicked = dateClicked;
+                List<Event> events = mCalendarView.getEvents(dateClicked);
+                Log.d("sd", "Day was clicked: " + dateClicked + " with events " + events);
+                if (events.size() == 0) {
+                    mVaccineDetailsTextView.setText("");
+                    mVaccineTitleTextView.setText("No Vaccines");
+                    mVaccineSubmitButton.setVisibility(GONE);
+                } else {
+                    Vaccine vaccine = (Vaccine) events.get(0).getData();
+                    String title = vaccine.getmTitle();
+                    for (int i = 1; i < events.size(); i++) {
+                        title = title.concat("\n" + ((Vaccine)events.get(i).getData()).getmTitle());
+                    }
+                    mVaccineTitleTextView.setText(title);
+                    String details;
+                    details = "Vaccination due on " + mDetailFormat.format(dateClicked);
+                    if (!vaccine.isDone()) {
+                        mVaccineSubmitButton.setVisibility(View.VISIBLE);
+                    } else {
+                        mVaccineSubmitButton.setVisibility(GONE);
+                        details = details.concat("\nCompleted");
+                    }
+                    mVaccineDetailsTextView.setText(details);
+                }
+            }
+
+            @Override
+            public void onMonthScroll(Date firstDayOfNewMonth) {
+                Log.d("Sd", "Month was scrolled to: " + firstDayOfNewMonth);
+                setTitle(mMonthFormat.format(firstDayOfNewMonth));
+            }
+        });
+
+
+        for (Date date : mChild.getmHepB()) {
+            mCalendarView.addEvent(new Event(R.color.colorAccent, date.getTime(), new Vaccine(date, true, HEPATITIS)));
+        }
+        for (Date date : mChild.getmTetanus()) {
+            mCalendarView.addEvent(new Event(R.color.colorAccent, date.getTime(), new Vaccine(date, true, TETANUS)));
+        }
+        for (Date date : mChild.getmPneumo()) {
+            mCalendarView.addEvent(new Event(R.color.colorAccent, date.getTime(), new Vaccine(date, true, PNEUMO)));
+        }
+        for (Date date : mChild.getmRota()) {
+            mCalendarView.addEvent(new Event(R.color.colorAccent, date.getTime(), new Vaccine(date, true, ROTA)));
+        }
+
 
     }
 
 
-/*
-
-    private void mockList(List<CalendarEvent> eventList) {
-        Calendar startTime1 = Calendar.getInstance();
-        Calendar endTime1 = Calendar.getInstance();
-        endTime1.add(Calendar.MONTH, 1);
-        BaseCalendarEvent event1 = new BaseCalendarEvent("Thibault travels in Iceland", "A wonderful journey!", "Iceland",
-                ContextCompat.getColor(this, R.color.colorAccent), startTime1, endTime1, true);
-        eventList.add(event1);
-
-        Calendar startTime2 = Calendar.getInstance();
-        startTime2.add(Calendar.DAY_OF_YEAR, 1);
-        Calendar endTime2 = Calendar.getInstance();
-        endTime2.add(Calendar.DAY_OF_YEAR, 3);
-        BaseCalendarEvent event2 = new BaseCalendarEvent("Visit to Dalvík", "A beautiful small town", "Dalvík",
-                ContextCompat.getColor(this, R.color.yellow), startTime2, endTime2, true);
-        eventList.add(event2);
-
-        // Example on how to provide your own layout
-        Calendar startTime3 = Calendar.getInstance();
-        Calendar endTime3 = Calendar.getInstance();
-        startTime3.set(Calendar.HOUR_OF_DAY, 14);
-        startTime3.set(Calendar.MINUTE, 0);
-        endTime3.set(Calendar.HOUR_OF_DAY, 15);
-        endTime3.set(Calendar.MINUTE, 0);
-        DrawableCalendarEvent event3 = new DrawableCalendarEvent("Visit of Harpa", "", "Dalvík",
-                ContextCompat.getColor(this, R.color.blue_dark), startTime3, endTime3, false, R.drawable.common_ic_googleplayservices);
-        eventList.add(event3);
-    }
-
-*/
     private static Calendar dateToCalendar(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -256,23 +288,38 @@ public class VaccinationActivity extends AppCompatActivity implements CalendarPi
         return cal.getTime();
     }
 
-    private void addVaccineRecord() {
+    private void submitVaccination() {
+        List<Event> events = mCalendarView.getEvents(mDateClicked);
+        for (Event event : events) {
+            Vaccine vaccine = (Vaccine) event.getData();
+            if (vaccine != null) {
+                try {
+                    Timber.d("Current calendar date is :" +Calendar.getInstance().getTime().toString());
+                    String date = mDateFormat.format(Calendar.getInstance().getTime());
+                    Timber.d("String date is "+date);
+                    Date currentDate = mDateFormat.parse(date);
+                    Timber.d("Current date is " + currentDate.toString());
+                    vaccine.setmCompleteDate(currentDate);
+                    String selection = ChildColumns.AADHAAR + "=?";
+                    String selectionArgs[] = {mChild.getmAadhaar()};
+                    ContentValues values = new ContentValues();
+                    values.put(vaccine.getDBKey(), date);
+                    getContentResolver().update(URI_CHILDREN, values, selection, selectionArgs);
+
+                    //TODO:Send data to server
+                    String urlParams = "?injection="+ vaccine.getDBKey()+"&aadhar="+mChild.getmAadhaar()+"&date="+currentDate.toString();
+                    RequestQueue queue = Volley.newRequestQueue(this);
+                    QueryUtils.sendVaccineDataRequest(queue,urlParams);
+                    Toast.makeText(this, "Vaccination succesfully done", Toast.LENGTH_SHORT).show();
+                    finish();
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
     }
 
-    @Override
-    public void onDaySelected(DayItem dayItem) {
-
-    }
-
-    @Override
-    public void onEventSelected(CalendarEvent event) {
-
-    }
-
-    @Override
-    public void onScrollToDate(Calendar calendar) {
-
-    }
 }
 
