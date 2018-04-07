@@ -1,5 +1,6 @@
 package com.safe9.bfi.ui;
 
+import android.content.ContentValues;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,12 +17,18 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.safe9.bfi.R;
+import com.safe9.bfi.data.ChildColumns;
 import com.safe9.bfi.model.Patient;
 import com.safe9.bfi.utils.QueryUtils;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
+
+import static com.safe9.bfi.data.PatientProvider.Children.URI_CHILDREN;
 
 public class AddChildActivity extends AppCompatActivity {
 
@@ -76,6 +83,33 @@ public class AddChildActivity extends AppCompatActivity {
         String aadhaar = mPatient.getmAadhaar();
         String weight = mWeightEditText.getText().toString().trim();
 
+        SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+
+        Calendar calendar = Calendar.getInstance();
+
+        Timber.d("Calendar date = " + calendar.getTime().toString());
+        String birthdate = mDateFormat.format(calendar.getTime());
+
+        Timber.d("Birthdate while inserting in db is :" + birthdate);
+        ContentValues values = new ContentValues();
+        values.put(ChildColumns.AADHAAR, aadhaar);
+        values.put(ChildColumns.BIRTHDATE, birthdate);
+        values.put(ChildColumns.HEPB1,"1970-01-01");
+        values.put(ChildColumns.HEPB6,"1970-01-01");
+        values.put(ChildColumns.TET2,"1970-01-01");
+        values.put(ChildColumns.TET4,"1970-01-01");
+        values.put(ChildColumns.TET6,"1970-01-01");
+        values.put(ChildColumns.TET12,"1970-01-01");
+        values.put(ChildColumns.TET18,"1970-01-01");
+        values.put(ChildColumns.PNEUM2,"1970-01-01");
+        values.put(ChildColumns.PNEUM4,"1970-01-01");
+        values.put(ChildColumns.PNEUM12,"1970-01-01");
+        values.put(ChildColumns.ROTA2,"1970-01-01");
+        values.put(ChildColumns.ROTA4,"1970-01-01");
+        values.put(ChildColumns.ROTA6,"1970-01-01");
+        getContentResolver().insert(URI_CHILDREN,values);
+
         double mLatitude = location.getLatitude();
         double mLongitude = location.getLongitude();
 
@@ -88,10 +122,10 @@ public class AddChildActivity extends AppCompatActivity {
                         + "&long=" + mLongitude
                         + "&weight=" + weight
                         + "&mother_aadhar=" + aadhaar;
-        Timber.d("urlParams "+urlParams);
+        Timber.d("urlParams " + urlParams);
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        QueryUtils.sendPatientDataRequest(queue, false, false,urlParams);
+        QueryUtils.sendPatientDataRequest(queue, false, false, urlParams);
 
         mLoadingIndicator.setVisibility(View.GONE);
         Toast.makeText(this, "Child details successfully registered", Toast.LENGTH_SHORT).show();

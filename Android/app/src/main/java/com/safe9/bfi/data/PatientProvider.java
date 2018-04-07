@@ -27,6 +27,16 @@ public class PatientProvider {
         public static final Uri URI_PATIENTS = Uri.parse("content://" + AUTHORITY + "/patients");
 
     }
+    @TableEndpoint(table = PatientDatabase.CHILDREN)
+    public static class Children {
+
+        @ContentUri(
+                path = "children",
+                type = "vnd.android.cursor.dir/child",
+                defaultSort = ChildColumns.AADHAAR + " ASC")
+        public static final Uri URI_CHILDREN = Uri.parse("content://" + AUTHORITY + "/children");
+
+    }
 
 
 }
