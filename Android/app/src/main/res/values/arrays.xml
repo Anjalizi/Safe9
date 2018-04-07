@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="gender_entries">
+        <item>@string/male</item>
+        <item>@string/female</item>
+        <item>@string/other</item>
+    </array>
+    <array name="method_entries">
+        <item>@string/vaginal_delivery</item>
+        <item>@string/caesarian_section</item>
+        <item>@string/vaginal_birth_after_caesarian</item>
+        <item>@string/vacuum_extraction</item>
+        <item>@string/forceps</item>
+    </array>
+</resources>

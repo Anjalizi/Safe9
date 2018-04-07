@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:id="@+id/rl_anganwadi_fetching"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:id="@+id/pb_angan_loading_indicator"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:id="@+id/tv_fetching_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/pb_angan_loading_indicator"
+            android:layout_centerHorizontal="true"
+            android:text="@string/fetching_data_anganwadi" />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_anganwadi"
+        android:layout_margin="8dp"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent" />
+
+</FrameLayout>
