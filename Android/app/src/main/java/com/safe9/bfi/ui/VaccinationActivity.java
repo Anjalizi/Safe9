@@ -1,5 +1,6 @@
 package com.safe9.bfi.ui;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -59,6 +60,7 @@ public class VaccinationActivity extends AppCompatActivity {
     private SimpleDateFormat mDateFormat, mMonthFormat, mDetailFormat;
 
 
+    @SuppressLint("SimpleDateFormat")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +122,7 @@ public class VaccinationActivity extends AppCompatActivity {
             } else {
                 mVaccineTitleTextView.setText("No Child Available");
             }
+            cursor.close();
         }
 
     }
@@ -310,7 +313,7 @@ public class VaccinationActivity extends AppCompatActivity {
                     values.put(vaccine.getDBKey(), date);
                     getContentResolver().update(URI_CHILDREN, values, selection, selectionArgs);
 
-                    String urlParams = "?injection=" + vaccine.getDBKey() + "&aadhar=" + mChild.getmAadhaar() + "&date=" + currentDate.toString();
+                    String urlParams = "?injection=" + vaccine.getDBKey() + "&aadhar=" + mChild.getmAadhaar();
                     RequestQueue queue = Volley.newRequestQueue(this);
                     QueryUtils.sendVaccineDataRequest(queue, urlParams);
                     Toast.makeText(this, "Vaccination succesfully done", Toast.LENGTH_SHORT).show();
