@@ -71,4 +71,5 @@
     <string name="add_child_title">Add Child Details</string>
     <string name="weight_of_child">Weight of Child</string>
     <string name="get_vaccine">Get Vaccine</string>
+    <string name="vaccination_due">\u2022 Vaccine due in 5 weeks</string>
 </resources>

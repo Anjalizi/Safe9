@@ -14,7 +14,23 @@ public class AnganPatient implements Parcelable {
     private int mWeeks;
     private double mLatitude;
     private double mLongitude;
+    private String mVaccineDate;
 
+    public String getmVaccineDate() {
+        return mVaccineDate;
+    }
+
+    public AnganPatient(String mName, int mWeeks, double mLatitude, double mLongitude, String mVaccineDate) {
+        this.mName = mName;
+        this.mWeeks = mWeeks;
+        this.mLatitude = mLatitude;
+        this.mLongitude = mLongitude;
+        this.mVaccineDate = mVaccineDate;
+    }
+
+    public void setmVaccineDate(String mVaccineDate) {
+        this.mVaccineDate = mVaccineDate;
+    }
 
     public AnganPatient(String mName, int mWeeks, double mLatitude, double mLongitude) {
         this.mName = mName;
@@ -66,6 +82,7 @@ public class AnganPatient implements Parcelable {
         dest.writeInt(this.mWeeks);
         dest.writeDouble(this.mLatitude);
         dest.writeDouble(this.mLongitude);
+        dest.writeString(this.mVaccineDate);
     }
 
     protected AnganPatient(Parcel in) {
@@ -73,6 +90,7 @@ public class AnganPatient implements Parcelable {
         this.mWeeks = in.readInt();
         this.mLatitude = in.readDouble();
         this.mLongitude = in.readDouble();
+        this.mVaccineDate = in.readString();
     }
 
     public static final Creator<AnganPatient> CREATOR = new Creator<AnganPatient>() {

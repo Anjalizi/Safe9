@@ -25,6 +25,8 @@ public class AnganPatientActivity extends AppCompatActivity {
     TextView mNameTextView;
     @BindView(R.id.tv_angan_patient_weeks)
     TextView mWeeksTextView;
+    @BindView(R.id.tv_angan_patient_vaccine)
+    TextView mVaccineTextView;
     @BindView(R.id.btn_visit_patient)
     Button mVisitButton;
 
@@ -41,7 +43,14 @@ public class AnganPatientActivity extends AppCompatActivity {
         mPatient = getIntent().getParcelableExtra(AnganPatient.ANGAN_PATIENT_CONSTANT);
 
         mNameTextView.setText(mPatient.getmName());
-        mWeeksTextView.setText(String.valueOf(mPatient.getmWeeks()) + " weeks pregnant");
+        if (mPatient.getmWeeks() == 0) {
+            mWeeksTextView.setVisibility(View.GONE);
+            mVaccineTextView.setVisibility(View.VISIBLE);
+        } else {
+
+            mVaccineTextView.setVisibility(View.GONE);
+            mWeeksTextView.setText(String.valueOf(mPatient.getmWeeks()) + " weeks pregnant");
+        }
         mVisitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -116,8 +116,10 @@ public class VaccinationActivity extends AppCompatActivity {
                 } catch (ParseException | NullPointerException e) {
                     e.printStackTrace();
                 }
+                setupCalendarView();
+            } else {
+                mVaccineTitleTextView.setText("No Child Available");
             }
-            setupCalendarView();
         }
 
     }
@@ -203,7 +205,7 @@ public class VaccinationActivity extends AppCompatActivity {
             Vaccine vaccine = (Vaccine) events.get(0).getData();
             String title = vaccine.getmTitle();
             for (int i = 1; i < events.size(); i++) {
-                title = title.concat("\n" + ((Vaccine)events.get(i).getData()).getmTitle());
+                title = title.concat("\n" + ((Vaccine) events.get(i).getData()).getmTitle());
             }
             mVaccineTitleTextView.setText(title);
             String details;
@@ -218,33 +220,35 @@ public class VaccinationActivity extends AppCompatActivity {
         }
 
 
-
         mCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
-                mDateClicked = dateClicked;
-                List<Event> events = mCalendarView.getEvents(dateClicked);
-                Log.d("sd", "Day was clicked: " + dateClicked + " with events " + events);
-                if (events.size() == 0) {
-                    mVaccineDetailsTextView.setText("");
-                    mVaccineTitleTextView.setText("No Vaccines");
-                    mVaccineSubmitButton.setVisibility(GONE);
-                } else {
-                    Vaccine vaccine = (Vaccine) events.get(0).getData();
-                    String title = vaccine.getmTitle();
-                    for (int i = 1; i < events.size(); i++) {
-                        title = title.concat("\n" + ((Vaccine)events.get(i).getData()).getmTitle());
-                    }
-                    mVaccineTitleTextView.setText(title);
-                    String details;
-                    details = "Vaccination due on " + mDetailFormat.format(dateClicked);
-                    if (!vaccine.isDone()) {
-                        mVaccineSubmitButton.setVisibility(View.VISIBLE);
-                    } else {
+                if (mChild != null) {
+
+                    mDateClicked = dateClicked;
+                    List<Event> events = mCalendarView.getEvents(dateClicked);
+                    Log.d("sd", "Day was clicked: " + dateClicked + " with events " + events);
+                    if (events.size() == 0) {
+                        mVaccineDetailsTextView.setText("");
+                        mVaccineTitleTextView.setText("No Vaccines");
                         mVaccineSubmitButton.setVisibility(GONE);
-                        details = details.concat("\nCompleted");
+                    } else {
+                        Vaccine vaccine = (Vaccine) events.get(0).getData();
+                        String title = vaccine.getmTitle();
+                        for (int i = 1; i < events.size(); i++) {
+                            title = title.concat("\n" + ((Vaccine) events.get(i).getData()).getmTitle());
+                        }
+                        mVaccineTitleTextView.setText(title);
+                        String details;
+                        details = "Vaccination due on " + mDetailFormat.format(dateClicked);
+                        if (!vaccine.isDone()) {
+                            mVaccineSubmitButton.setVisibility(View.VISIBLE);
+                        } else {
+                            mVaccineSubmitButton.setVisibility(GONE);
+                            details = details.concat("\nCompleted");
+                        }
+                        mVaccineDetailsTextView.setText(details);
                     }
-                    mVaccineDetailsTextView.setText(details);
                 }
             }
 
@@ -294,9 +298,9 @@ public class VaccinationActivity extends AppCompatActivity {
             Vaccine vaccine = (Vaccine) event.getData();
             if (vaccine != null) {
                 try {
-                    Timber.d("Current calendar date is :" +Calendar.getInstance().getTime().toString());
+                    Timber.d("Current calendar date is :" + Calendar.getInstance().getTime().toString());
                     String date = mDateFormat.format(Calendar.getInstance().getTime());
-                    Timber.d("String date is "+date);
+                    Timber.d("String date is " + date);
                     Date currentDate = mDateFormat.parse(date);
                     Timber.d("Current date is " + currentDate.toString());
                     vaccine.setmCompleteDate(currentDate);
@@ -306,10 +310,9 @@ public class VaccinationActivity extends AppCompatActivity {
                     values.put(vaccine.getDBKey(), date);
                     getContentResolver().update(URI_CHILDREN, values, selection, selectionArgs);
 
-                    //TODO:Send data to server
-                    String urlParams = "?injection="+ vaccine.getDBKey()+"&aadhar="+mChild.getmAadhaar()+"&date="+currentDate.toString();
+                    String urlParams = "?injection=" + vaccine.getDBKey() + "&aadhar=" + mChild.getmAadhaar() + "&date=" + currentDate.toString();
                     RequestQueue queue = Volley.newRequestQueue(this);
-                    QueryUtils.sendVaccineDataRequest(queue,urlParams);
+                    QueryUtils.sendVaccineDataRequest(queue, urlParams);
                     Toast.makeText(this, "Vaccination succesfully done", Toast.LENGTH_SHORT).show();
                     finish();
 
