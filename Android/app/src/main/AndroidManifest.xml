@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.safe9.bfi">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/icon"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".ui.MainActivity" />
+        <activity android:name=".ui.AddPatientActivity" />
+
+        <provider
+            android:name=".data.generated.PatientProvider"
+            android:authorities="${applicationId}"
+            android:exported="false" />
+
+        <activity android:name=".ui.SelectPatientActivity" />
+        <activity android:name=".ui.PatientActivity" />
+        <activity android:name=".ui.AnganwadiActivity" />
+        <activity android:name=".ui.SonographyActivity" />
+        <activity android:name=".ui.LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.AnganPatientActivity" />
+        <activity android:name=".ui.PlaceholderActivity" />
+        <activity android:name=".ui.VaccinationActivity" />
+        <activity android:name=".ui.AddChildActivity"></activity>
+    </application>
+
+</manifest>

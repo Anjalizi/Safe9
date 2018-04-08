@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/iv_hospital"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:text="Hospital Mode"
+        android:textColor="@android:color/black"
+        android:textSize="22sp" />
+
+    <ImageView
+        android:id="@+id/iv_hospital"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_above="@+id/black_divider"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"
+        android:src="@drawable/hospital" />
+
+    <View
+        android:id="@+id/black_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_centerInParent="true"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:background="@android:color/black" />
+
+    <ImageView
+        android:id="@+id/iv_anganwadi"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_below="@+id/tv_label_anganwadi"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/anganwadi" />
+
+    <TextView
+        android:id="@+id/tv_label_anganwadi"
+        style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/black_divider"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Anganwadi Mode"
+        android:textColor="@android:color/black"
+        android:textSize="22sp" />
+
+</RelativeLayout>

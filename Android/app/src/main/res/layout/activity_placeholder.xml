@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="8dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                style="@style/Base.Widget.AppCompat.ActionBar.Solid"
+                android:textSize="22sp"
+                android:textColor="@color/colorAccent"
+                android:id="@+id/tv_placeholder_slip_label"
+                android:layout_centerHorizontal="true"/>
+
+            <TextView
+                android:id="@+id/tv_placeholder_patient_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_placeholder_slip_label"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/patient"
+                android:textColor="@color/colorAccent"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/tv_placeholder_patient"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_below="@+id/tv_placeholder_slip_label"
+                android:layout_toEndOf="@+id/tv_placeholder_patient_label"
+                android:textAppearance="@style/Base.Widget.AppCompat.ActionBar"
+                android:textSize="22sp"
+                tools:text="Patient" />
+
+            <TextView
+                android:id="@+id/tv_placeholder_doctor_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_placeholder_patient_label"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/doctor"
+                android:textColor="@color/colorAccent"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/tv_placeholder_doctor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_placeholder_patient_label"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_toEndOf="@+id/tv_placeholder_doctor_label"
+                android:textAppearance="@style/Base.Widget.AppCompat.ActionBar"
+                android:textSize="22sp"
+                tools:text="Doctor" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/btn_proceed"
+                android:layout_margin="16dp"
+                android:layout_below="@+id/tv_placeholder_doctor"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:textColor="@color/colorAccent"
+                android:text="Proceed"/>
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+   </RelativeLayout>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_user_activity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ImageView
+        android:id="@+id/iv_checkup"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+
+        android:src="@drawable/checkup" />
+
+    <TextView
+        android:id="@+id/tv_checkup"
+        style="@style/Base.Widget.AppCompat.ActionBar.Solid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_checkup"
+        android:textColor="@android:color/black"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/general_checkup"
+        android:textSize="22sp" />
+
+    <View
+        android:id="@+id/black_divider_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_centerInParent="true"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:background="@android:color/black" />
+
+    <View
+        android:id="@+id/black_divider_vertical"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/black" />
+    <ImageView
+        android:id="@+id/iv_sono"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="32dp"
+
+        android:src="@drawable/sono" />
+
+    <TextView
+        android:id="@+id/tv_sonography"
+        style="@style/Base.Widget.AppCompat.ActionBar.Solid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_sono"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="32dp"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="32dp"
+        android:text="@string/sonography"
+        android:textSize="22sp" />
+
+
+    <ImageView
+        android:id="@+id/iv_test"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_below="@id/black_divider_horizontal"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+
+        android:src="@drawable/test" />
+
+    <TextView
+        android:id="@+id/tv_test"
+        style="@style/Base.Widget.AppCompat.ActionBar.Solid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_test"
+        android:textColor="@android:color/black"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/medical_tests"
+        android:textSize="22sp" />
+
+    <ImageView
+        android:id="@+id/iv_vaccine"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/black_divider_horizontal"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="32dp"
+
+        android:src="@drawable/vaccine" />
+
+    <TextView
+        android:id="@+id/tv_vaccine"
+        style="@style/Base.Widget.AppCompat.ActionBar.Solid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_vaccine"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="32dp"
+        android:textColor="@android:color/black"
+        android:text="@string/vaccination"
+        android:textSize="22sp" />
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fabSize="normal"
+        android:id="@+id/fab_patient_add_child"
+        android:src="@drawable/child"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>
