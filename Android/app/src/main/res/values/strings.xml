@@ -63,7 +63,7 @@
     <string name="birthmark">Birthmark(if any)</string>
     <string name="vaginal_delivery">Vaginal Delivery</string>
     <string name="caesarian_section">Caesarian Section</string>
-    <string name="vaginal_birth_after_caesarian">Vaginal Birth after Caesarian</string>
+    <string name="vaginal_birth_after_caesarian">Birth after Caesarian</string>
     <string name="vacuum_extraction">Vacuum Extraction</string>
     <string name="forceps">Forceps</string>
     <string name="method">Method</string>
